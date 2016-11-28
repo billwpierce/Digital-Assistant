@@ -8,9 +8,10 @@ with open('../keys.json', 'r') as file_pointer:
 def say(text):
     os.system("say " + text)
 from os import path
+say("Initializing")
 
-conversationUsername = str(json_object["CONVERSATION-USERNAME"])
-conversationPassword = str(json_object["CONVERSATION-PASSWORD"])
+conversationUsername = json_object["CONVERSATION-USERNAME"]
+conversationPassword = json_object["CONVERSATION-PASSWORD"]
 speechUsername = str(json_object["STT_USERNAME"])
 speechPassword = str(json_object["STT_PASSWORD"])
 apiKey = str(json_object["API-KEY"])
@@ -60,6 +61,7 @@ while(i < 10):
 
     print("Response:")
     myText = listen()
+    print(myText)
 
     response = conversation.message(
         workspace_id=workspaceID,
