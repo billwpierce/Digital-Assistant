@@ -50,7 +50,7 @@ response = conversation.message(
     context=context
 )
 i = 0
-while(i < 10):
+while i < 10:
     # print(json.dumps(response, indent=2))
     # print(response['context'])
     context = response['context']
