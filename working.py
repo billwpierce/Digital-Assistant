@@ -9,10 +9,7 @@ with open('../keys.json', 'r') as file_pointer:
 def say(text):
     os.system("say " + text)
 def runOutputCommand(commandName):
-    # print("Command name:")
-    # print(commandName)
-    # output = commands.command_to_functions[commandName]
-    return commands.command_to_functions[commandName]
+    return str(commands.command_to_functions[commandName])
 from os import path
 say("Initializing")
 
