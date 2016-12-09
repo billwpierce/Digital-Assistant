@@ -6,7 +6,6 @@ import json
 def time():
     return datetime.now().time()
 def location():
-    # Automatically geolocate the connecting IP
     f = urllib2.urlopen('http://freegeoip.net/json/')
     json_string = f.read()
     f.close()
@@ -17,6 +16,5 @@ def location():
     location_zip = location['zip_code']
     finallocation = "You are in " + str(location_city) + ", " + str(location_state) + "."
     return finallocation
-
 def call(name):
     return globals()[name]()
