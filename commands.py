@@ -18,4 +18,5 @@ def location():
     finallocation = "You are in " + str(location_city) + ", " + str(location_state) + "."
     return finallocation
 
-command_to_functions = {'time': time(), 'location': location()}
+def call(name):
+    return globals()[name]()
