@@ -1,12 +1,18 @@
 import speech_recognition as sr
 import json
 import os
+import commands
 from watson_developer_cloud import ConversationV1
 with open('../keys.json', 'r') as file_pointer:
     json_object=json.load(open('../keys.json','r'))
 
 def say(text):
     os.system("say " + text)
+def runOutputCommand(commandName):
+    # print("Command name:")
+    # print(commandName)
+    # output = commands.command_to_functions[commandName]
+    return commands.command_to_functions[commandName]
 from os import path
 say("Initializing")
 
@@ -43,6 +49,7 @@ context = {}
 
 print("Start a conversation:")
 myText = listen()
+print(myText)
 
 response = conversation.message(
     workspace_id=workspaceID,
@@ -55,11 +62,14 @@ while i < 10:
     # print(response['context'])
     context = response['context']
     textualResponse = response['output']['text']
-    say(textualResponse[0])
+    response = textualResponse[0]
+    if response[0] == "/":
+        response = runOutputCommand(response[1:])
+    say(response)
     print("Computer response: ")
-    print(textualResponse[0])
+    print(response)
 
-    print("Response:")
+    print("Your Response:")
     myText = listen()
     print(myText)
 
