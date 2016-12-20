@@ -42,19 +42,17 @@ conversation = ConversationV1(
 )
 
 # Replace with the context obtained from the initial request
-context = {}
 
 print("Start a conversation:")
 myText = listen()
 print(myText)
-
 response = conversation.message(
     workspace_id=workspaceID,
     message_input={'text': myText},
-    context=context
+    # context=context
 )
-i = 0
-while i < 10:
+# i = 0
+while True:
     # print(json.dumps(response, indent=2))
     # print(response['context'])
     context = response['context']
@@ -75,4 +73,4 @@ while i < 10:
         message_input={'text': myText},
         context=context
     )
-    i = i + 1
+    # i = i + 1

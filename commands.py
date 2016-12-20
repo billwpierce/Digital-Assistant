@@ -4,7 +4,9 @@ import json
 
 
 def time():
-    return datetime.now().time()
+    now = datetime.now()
+    time = str(now.hour) + ":" + str(now.minute)
+    return time
 def location():
     f = urllib2.urlopen('http://freegeoip.net/json/')
     json_string = f.read()
