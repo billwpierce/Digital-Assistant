@@ -31,7 +31,10 @@ def listen():
         path.realpath(__file__)), "microphone-results.wav")
     print("finding credentials")
 
-    myText = r.recognize_ibm(audio, username=speechUsername, password=speechPassword)
+    try:
+        myText = r.recognize_ibm(audio, username=speechUsername, password=speechPassword)
+    except Exception as e:
+        myText = "error"
     return myText
 
 
@@ -55,22 +58,29 @@ response = conversation.message(
 while True:
     # print(json.dumps(response, indent=2))
     # print(response['context'])
-    context = response['context']
+    currentContext = response['context']
     textualResponse = response['output']['text']
     response = textualResponse[0]
     if response[0] == "/":
         response = runOutputCommand(response[1:])
-    say(response)
     print("Computer response: ")
     print(response)
+    say(response)
 
     print("Your Response:")
     myText = listen()
     print(myText)
-
-    response = conversation.message(
-        workspace_id=workspaceID,
-        message_input={'text': myText},
-        context=context
-    )
+    print("Context:")
+    print(currentContext)
+    try:
+        response = conversation.message(
+            workspace_id=workspaceID,
+            message_input={'text': myText},
+            context=currentContext
+        )
+    except Exception as e:
+        response = conversation.message(
+            workspace_id=workspaceID,
+            message_input={'text': myText},
+        )
     # i = i + 1
