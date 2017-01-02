@@ -67,12 +67,12 @@ while True:
         print("not changing context")
     else:
         currentContext = response['context']
-    response = textualResponse[0]
-    if response[0] == "/":
-        response = runOutputCommand(response[1:], extractedAlchemy)
+    finalResponse = textualResponse[0]
+    if finalResponse[0] == "/":
+        finalResponse = runOutputCommand(finalResponse[1:], extractedAlchemy)
     print("Computer response: ")
-    print(response)
-    say(response)
+    print(finalResponse)
+    say(finalResponse)
 
     print("Your Response:")
     myText = listen()
