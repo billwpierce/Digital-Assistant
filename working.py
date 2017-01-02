@@ -6,10 +6,13 @@ from watson_developer_cloud import ConversationV1
 with open('../keys.json', 'r') as file_pointer:
     json_object=json.load(open('../keys.json','r'))
 
+from alchemyapi import AlchemyAPI
+alchemyapi = AlchemyAPI()
+
 def say(text):
     os.system("say " + text)
-def runOutputCommand(commandName):
-    return str(commands.call(commandName.encode('ascii','ignore')))
+def runOutputCommand(commandName, extractedAlchemy):
+    return str(commands.call(commandName.encode('ascii','ignore'), extractedAlchemy))
 from os import path
 say("Initializing")
 
@@ -48,6 +51,7 @@ conversation = ConversationV1(
 
 print("Start a conversation:")
 myText = listen()
+extractedAlchemy = alchemyapi.entities('text', myText, {'sentiment': 1})
 print(myText)
 response = conversation.message(
     workspace_id=workspaceID,
@@ -58,17 +62,21 @@ response = conversation.message(
 while True:
     # print(json.dumps(response, indent=2))
     # print(response['context'])
-    currentContext = response['context']
     textualResponse = response['output']['text']
+    if textualResponse[0] == "Could you please repeat?":
+        print("not changing context")
+    else:
+        currentContext = response['context']
     response = textualResponse[0]
     if response[0] == "/":
-        response = runOutputCommand(response[1:])
+        response = runOutputCommand(response[1:], extractedAlchemy)
     print("Computer response: ")
     print(response)
     say(response)
 
     print("Your Response:")
     myText = listen()
+    extractedAlchemy = alchemyapi.entities('text', myText, {'sentiment': 1})
     print(myText)
     print("Context:")
     print(currentContext)
