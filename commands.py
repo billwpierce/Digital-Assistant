@@ -43,9 +43,9 @@ def time(aExtraction):
 def location(aExtraction):
     location = locationFromIP()
     location_city = location['city']
-    location_state = location['region_name']
-    location_country = location['country_name']
-    location_zip = location['zip_code']
+    location_state = location['region']
+    location_country = location['country']
+    location_zip = location['postal']
     finallocation = "You are in " + str(location_city) + ", " + str(location_state) + "."
     return finallocation
 
@@ -63,25 +63,19 @@ def alchemyFindLocation(aExtraction):
         if placeFound:
             finalLocation = str(location)
         else:
-            location_city = locationFromIP()['city']
-            finalLocation = location_city
+            location_stuff = locationFromIP()
+            finalLocation = location_stuff
     else:
         print("Problem with alchemy api.")
-        location_city = locationFromIP()['city']
+        location_city = locationFromIP()
         finalLocation = location_city
     return finalLocation
 
 #Returns general location from ip
 def locationFromIP():
     ipinfoio = subprocess.check_output(["curl","ipinfo.io"])
-    # print ipinfoio
-    ip = json.loads(ipinfoio)['ip']
-    # print ip
-    f = urllib2.urlopen('http://freegeoip.net/json/' + ip)
-    json_string = f.read()
-    f.close()
-    location = json.loads(json_string)
-    return location
+    ip = json.loads(ipinfoio)
+    return str(ip['city'] + " " + ip['region'])
 
 #Calls a function from this file.
 def call(name, aExtraction):
