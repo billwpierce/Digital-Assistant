@@ -10,7 +10,7 @@ from alchemyapi import AlchemyAPI
 alchemyapi = AlchemyAPI()
 
 def say(text):
-    os.system("say " + text)
+    os.system("say '" + str(text) + "'")
 def runOutputCommand(commandName, extractedAlchemy):
     return str(commands.call(commandName.encode('ascii','ignore'), extractedAlchemy))
 from os import path
@@ -78,8 +78,11 @@ while True:
     myText = listen()
     extractedAlchemy = alchemyapi.entities('text', myText, {'sentiment': 1})
     print(myText)
-    print("Context:")
-    print(currentContext)
+    try:
+        print("Context:")
+        print(currentContext)
+    except NameError as e:
+        pass
     try:
         response = conversation.message(
             workspace_id=workspaceID,
@@ -87,8 +90,13 @@ while True:
             context=currentContext
         )
     except Exception as e:
-        response = conversation.message(
-            workspace_id=workspaceID,
-            message_input={'text': myText},
-        )
+        try:
+            response = conversation.message(
+                workspace_id=workspaceID,
+                message_input={'text': myText},
+            )
+        except Exception as e:
+            response = conversation.message(
+                workspace_id=workspaceID,
+            )
     # i = i + 1

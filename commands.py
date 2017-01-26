@@ -2,6 +2,7 @@ from datetime import datetime
 import urllib2
 import json
 import pyowm
+import subprocess
 
 with open('../keys.json', 'r') as file_pointer:
     json_object=json.load(open('../keys.json','r'))
@@ -12,24 +13,25 @@ def currenttemperature(aExtraction):
     finalLocation = alchemyFindLocation(aExtraction)
     observation = owm.weather_at_place(finalLocation)
     w = observation.get_weather()
-    z = w.get_temperature('fahrenheit')
-    print(w)
-    print(z['temp'])
-    return "The temperature in " + finalLocation + " is " + str(z['temp']) + " degrees fahrenheit."
+    z = w.get_temperature('celsius')
+    print(z)
+    # print(z['temp'])
+    return "The temperature in " + finalLocation + " is " + str(z['temp']) + " degrees celsius."
 
 #Tells you some basic weather information with the same location parameters as with the currenttemperature() function.
 def currentweather(aExtraction):
     owm = pyowm.OWM(str(json_object["OWM_KEY"]))
     finalLocation = alchemyFindLocation(aExtraction)
+    print finalLocation
     observation = owm.weather_at_place(finalLocation)
     w = observation.get_weather()
     detailedObservation = w.get_detailed_status()
-    z = w.get_temperature('fahrenheit')
+    z = w.get_temperature('celsius')
     temperature = z['temp']
     s = w.get_wind()
     windSpeed = s['speed']
     print(z)
-    return "The weather in " + finalLocation + " is " + str(detailedObservation) + " with a temperature of " + str(temperature) + " degrees fahrenheit, with a wind speed of " + str(windSpeed) + " meters per second."
+    return "The weather in " + finalLocation + " is " + str(detailedObservation) + " with a temperature of " + str(temperature) + " degrees celsius, with a wind speed of " + str(windSpeed) + " meters per second."
 
 #Tells you the time
 def time(aExtraction):
@@ -39,10 +41,7 @@ def time(aExtraction):
 
 #Tells you your current location
 def location(aExtraction):
-    f = urllib2.urlopen('http://freegeoip.net/json/')
-    json_string = f.read()
-    f.close()
-    location = json.loads(json_string)
+    location = locationFromIP()
     location_city = location['city']
     location_state = location['region_name']
     location_country = location['country_name']
@@ -58,30 +57,31 @@ def alchemyFindLocation(aExtraction):
             if entity['type'] == "City" or entity['type'] == "StateOrCounty" or entity['type'] == "Country":
                 print('text: ', entity['text'].encode('utf-8'))
                 print('type: ', entity['type'])
-                # print('relevance: ', entity['relevance'])
-                # print('sentiment: ', entity['sentiment']['type'])
-                # if 'score' in entity['sentiment']:
-                #     print('sentiment score: ' + entity['sentiment']['score'])
-                # print('')
                 placeFound = True
                 location = entity['text'].encode('utf-8')
                 break
         if placeFound:
             finalLocation = str(location)
         else:
-            f = urllib2.urlopen('http://freegeoip.net/json/')
-            json_string = f.read()
-            f.close()
-            location = json.loads(json_string)
-            finalLocation = str(location['city'])
+            location_city = locationFromIP()['city']
+            finalLocation = location_city
     else:
         print("Problem with alchemy api.")
-        f = urllib2.urlopen('http://freegeoip.net/json/')
-        json_string = f.read()
-        f.close()
-        location = json.loads(json_string)
-        finalLocation = str(location['city'])
+        location_city = locationFromIP()['city']
+        finalLocation = location_city
     return finalLocation
+
+#Returns general location from ip
+def locationFromIP():
+    ipinfoio = subprocess.check_output(["curl","ipinfo.io"])
+    # print ipinfoio
+    ip = json.loads(ipinfoio)['ip']
+    # print ip
+    f = urllib2.urlopen('http://freegeoip.net/json/' + ip)
+    json_string = f.read()
+    f.close()
+    location = json.loads(json_string)
+    return location
 
 #Calls a function from this file.
 def call(name, aExtraction):
