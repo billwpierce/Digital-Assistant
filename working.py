@@ -2,6 +2,7 @@ import speech_recognition as sr
 import json
 import os
 import commands
+import subprocess
 from watson_developer_cloud import ConversationV1
 with open('../keys.json', 'r') as file_pointer:
     json_object=json.load(open('../keys.json','r'))
@@ -10,7 +11,7 @@ from alchemyapi import AlchemyAPI
 alchemyapi = AlchemyAPI()
 
 def say(text):
-    os.system("say '" + str(text) + "'")
+    subprocess.check_output(["espeak",text])
 def runOutputCommand(commandName, extractedAlchemy):
     return str(commands.call(commandName.encode('ascii','ignore'), extractedAlchemy))
 from os import path
