@@ -11,7 +11,7 @@ from alchemyapi import AlchemyAPI
 alchemyapi = AlchemyAPI()
 
 def say(text):
-    subprocess.check_output(["espeak",text])
+    subprocess.check_output(["say",text])
 def runOutputCommand(commandName, extractedAlchemy):
     return str(commands.call(commandName.encode('ascii','ignore'), extractedAlchemy))
 from os import path
