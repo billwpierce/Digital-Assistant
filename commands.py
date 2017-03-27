@@ -47,7 +47,7 @@ def location(aExtraction):
     # location_country = location['country']
     # location_zip = location['postal']
     # finallocation = "You are in " + str(location_city) + ", " + str(location_state) + "."
-    finallocation = locationFromIP
+    finallocation = locationFromIP()
     return finallocation
 
 #Takes an alchemy call and, if it is valid, returns a location. If it isn't, it returns your current location.
